@@ -28,7 +28,7 @@ Download the latest release from the [Releases page](../../releases) -- you need
 
 1. Download the mod `.zip`
 2. Go to Bugsnax in your Steam library. Right click, manage -> browse local files
-3. Place the mod directly into this Bugsnax root folder
+3. Place the BugsnaxMod.zip file directly into this Bugsnax root folder. No need to extract it.
 4. This mod prevents story-quest tools (Sauce Slinger, Buggy Ball, Lunchpad, SnakGrappler, Trip Shot) from being handed out early by vanilla quest completion
 
 ### 3. Start a new game
