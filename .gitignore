@@ -1,17 +1,13 @@
-# Built/packaged artifacts -- these belong on the Releases page, not in git history
 *.apworld
 *.zip
 
-# Python
 __pycache__/
 *.pyc
 *.pyo
 
-# Editor/OS cruft
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
 
-# Local save file backups, if you keep any in this folder
 *.save
