@@ -13,19 +13,16 @@ class ItemData(NamedTuple):
 
 item_table: dict[str, ItemData] = {
     'Sauce Slinger': ItemData(BASE_ID + 0, ItemClassification.progression, 1),
-    'Bug Net': ItemData(BASE_ID + 1, ItemClassification.progression, 1),
     'Buggy Ball': ItemData(BASE_ID + 2, ItemClassification.progression, 1),
     'Lunchpad': ItemData(BASE_ID + 3, ItemClassification.progression, 1),
     'SnakGrappler': ItemData(BASE_ID + 4, ItemClassification.progression, 1),
     'Trip Shot': ItemData(BASE_ID + 5, ItemClassification.progression, 1),
-    'Snaxscope': ItemData(BASE_ID + 6, ItemClassification.progression, 1),
-    'Snaktivator': ItemData(BASE_ID + 7, ItemClassification.useful, 1),
     'Golden Snax': ItemData(BASE_ID + 8, ItemClassification.progression, 50),
     'Story Complete Token': ItemData(BASE_ID + 9, ItemClassification.progression, 1),
-    'BUNGER!': ItemData(BASE_ID + 10, ItemClassification.filler, 15),
-    'BOPSICLE!': ItemData(BASE_ID + 11, ItemClassification.filler, 15),
+    'BUNGER!': ItemData(BASE_ID + 10, ItemClassification.filler, 16),
+    'BOPSICLE!': ItemData(BASE_ID + 11, ItemClassification.filler, 16),
     'STRABBY!': ItemData(BASE_ID + 12, ItemClassification.filler, 15),
-    'CRAPPLE!': ItemData(BASE_ID + 13, ItemClassification.filler, 14),
+    'CRAPPLE!': ItemData(BASE_ID + 13, ItemClassification.filler, 15),
 }
 
 FILLER_ITEM_NAMES = ['BUNGER!', 'BOPSICLE!', 'STRABBY!', 'CRAPPLE!']

@@ -33,10 +33,10 @@ def _ensure_dependency() -> bool:
     root.withdraw()
 
     should_install = messagebox.askyesno(
-        "Bugsnax Client - Missing Dependency",
+        "Bugsnax Client -- Missing Dependency",
         "The Bugsnax client needs one extra Python package Archipelago "
         "doesn't include by default: pymem.\n\n"
-        "Install it now? (only required once)",
+        "Install it now? (needs internet access, only required once)",
     )
     if not should_install:
         root.destroy()
@@ -83,7 +83,7 @@ def launch():
             root = tkinter.Tk()
             root.withdraw()
             messagebox.showerror(
-                "Bugsnax Client - Crashed on Startup",
+                "Bugsnax Client -- Crashed on Startup",
                 f"Full error log written to:\n{log_path}\n\n{tb[-1200:]}",
             )
             root.destroy()

@@ -11,8 +11,8 @@ class GoldenSnaxRequired(Range):
     Capped at 35.
     Setting to 0 will disable this requirement."""
     display_name = "Golden Snax Required"
-    range_start = 0
-    range_end = 35
+    range_start = 1
+    range_end = 50
     default = 20
 
 
@@ -23,7 +23,7 @@ class GoldenSnaxExtra(Range):
     """
     display_name = "Extra Golden Snax"
     range_start = 0
-    range_end = 15
+    range_end = 49
     default = 5
 
 

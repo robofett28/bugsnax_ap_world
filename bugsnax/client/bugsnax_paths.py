@@ -58,7 +58,7 @@ def find_save_path() -> Path:
         p = Path(override)
         if p.is_file():
             return p
-        print(f"BUGSNAX_SAVE_PATH is set to {p}, but that file don't exist. "
+        print(f"BUGSNAX_SAVE_PATH is set to {p}, but that file doesn't exist. "
               f"Falling back to auto-detection.")
 
     saved_games = _get_known_folder_path(FOLDERID_SAVED_GAMES)
@@ -76,11 +76,11 @@ def find_save_path() -> Path:
     save_path = bugsnax_dir / RANDOMIZER_SAVE_FILENAME
     if not save_path.is_file():
         raise FileNotFoundError(
-            f"The Bugsnax randomiser is locked to save slot 2, and "
+            f"The Bugsnax randomizer is locked to save slot 2, and "
             f"{save_path} doesn't exist yet.\n"
             "Start a brand NEW game in save slot 2 in Bugsnax first (the "
-            "randomiser never touches slots 1, 3, 4), then reconnect the client.\n"
-            "If your save is somewhere unusual or silly, set the BUGSNAX_SAVE_PATH "
+            "randomizer never touches slots 1, 3, 4), then reconnect the client.\n"
+            "If your save is somewhere unusual, set the BUGSNAX_SAVE_PATH "
             "environment variable to the exact .save file path instead."
         )
 

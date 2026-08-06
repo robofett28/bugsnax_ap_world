@@ -3,10 +3,10 @@ item_name_translation.py
 
 """
 
-# apworld item name -> bugsnax_memory internal name
+# apworld item name -> bugsnax_memory internal name (tools use _Selectable pattern)
 GRANTABLE_TOOLS = {
     "Buggy Ball": "StrabbyBall",
-    "Snak Trap": "SnapTrap",    # Not used as of now
+    "Snak Trap": "SnapTrap",
     "SnakGrappler": "Hookshot",
     "Sauce Slinger": "Slingshot",
     "Lunchpad": "Launchpad",
@@ -15,8 +15,7 @@ GRANTABLE_TOOLS = {
 
 MOD_SUPPRESSED_TOOLS = {"StrabbyBall", "Slingshot", "Launchpad", "Hookshot", "Tripwire"}
 
-# Items that exist in the pool but we can't grant yet (this is more laziness on my behalf - Rob)
-KNOWN_UNSUPPORTED = {
-    "Bug Net": "special case — checked by existence, not value (see notes)",
-    "Snaktivator": "not yet hunted — entangled with the eating system",
-}
+# (Bug Net and Snaktivator used to be here, but they've been removed from
+# the item pool entirely rather than "randomised but do nothing" as it was
+# confusing to players who were unaware of this.)
+KNOWN_UNSUPPORTED = {}

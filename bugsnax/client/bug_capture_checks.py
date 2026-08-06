@@ -32,7 +32,7 @@ BUG_CAPTURE_CHECKS = {
     "Catch Green Lollive": "Content/Definitions/Bugs/Olive.xml",
     "Catch Pineantula": "Content/Definitions/Bugs/Pineapple.xml",
 
-    # ---- Sauce Slinger + Buggy Ball ---
+    # --- Sauce Slinger + Buggy Ball ---
     "Catch Ruby Peelbug": "Content/Definitions/Bugs/BloodOrange.xml",
     "Catch Orange Peelbug": "Content/Definitions/Bugs/Orange.xml",
     "Catch Poptick": "Content/Definitions/Bugs/Popcorn.xml",
@@ -61,15 +61,15 @@ BUG_CAPTURE_CHECKS = {
     "Catch Crystal Sweetiefly": "Content/Definitions/Bugs/Lollipop_RockCandy.xml",
     "Catch Puffy Snakpod": "Content/Definitions/Bugs/SnackBag_RiceCrackers.xml",
 
-    # --- Sauce Slinger + Buggy Ball + Trip Shot --
+    # --- Sauce Slinger + Buggy Ball + Trip Shot ---
     "Catch Big Bopsicle": "Content/Definitions/Bugs/IcePop.xml",
     "Catch Cobhopper": "Content/Definitions/Bugs/Corn.xml",
     "Catch Sprinklepede": "Content/Definitions/Bugs/Donut.xml",
 
-    # ---- Sauce Slinger + Buggy Ball + Trip Shot + SnakGrappler ----
+    # --- Sauce Slinger + Buggy Ball + Trip Shot + SnakGrappler ---
     "Catch Nutty Snakpod": "Content/Definitions/Bugs/SnackBag_TrailMix.xml",
 
-    # -- Sauce Slinger + Buggy Ball + Trip Shot + SnakGrappler + Lunchpad ---
+    # --- Sauce Slinger + Buggy Ball + Trip Shot + SnakGrappler + Lunchpad ---
     "Catch Rainbow Sweetiefly": "Content/Definitions/Bugs/Lollipop_Flat.xml",
     "Catch Red Banopper": "Content/Definitions/Bugs/Banana_Red.xml",
     "Catch Green Crapple": "Content/Definitions/Bugs/GreenApple.xml",
@@ -110,5 +110,5 @@ BUG_CAPTURE_CHECKS = {
     "Catch Instabug": "Content/Definitions/Bugs/Shishkabob_Insta.xml",
     "Catch Melty Snakpod": "Content/Definitions/Bugs/SnackBag_Candy.xml",}
 
-# Not tied to a single Captured-section entry. needs separate logic later
+# Not tied to a single Captured-section entry -- needs separate logic later
 SPECIAL_LOCATIONS = ["Catch All Inner Bugs!", "Starting Region Randomizer"]

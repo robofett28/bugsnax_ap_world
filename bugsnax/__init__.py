@@ -47,18 +47,18 @@ class BugsnaxWeb(WebWorld):
     tutorials = [
         Tutorial(
             "Multiworld Setup Guide",
-            "A guide to setting up the Bugsnax randomiser for Archipelago multiworld games.",
+            "A guide to setting up the Bugsnax randomizer for Archipelago multiworld games.",
             "English",
             "setup_en.md",
             "setup/en",
-            ["Robofett"],
+            ["Balenar"],
         )
     ]
 
 
 class BugsnaxWorld(World):
-    """Bugsnax is a game about capturing creatures that are part bug, part
-    snack (it's in the name)"""
+    """Bugsnax is a game about where players explore a mysterious island
+    and attempt to find and capture the eponymous insectoid food creatures"""
     game = "Bugsnax"
     web = BugsnaxWeb()
 
@@ -96,6 +96,7 @@ class BugsnaxWorld(World):
         for loc_name, rule in location_rules.items():
             location = self.multiworld.get_location(loc_name, self.player)
             set_rule(location, lambda state, rule=rule: rule(state, self.player))
+
         goal_tools = ["Sauce Slinger", "Buggy Ball", "Trip Shot", "SnakGrappler", "Lunchpad"]
         golden_snax_required = self.options.golden_snax_required.value
 

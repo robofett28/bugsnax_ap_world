@@ -22,7 +22,7 @@ PROCESS_NAME = "Bugsnax.exe"
 KNOWN_BUILD_SHA256 = "C63B2DE643E7376499DF42DD2E3A25AF453E7EE92AA703CBD31A2EDC218A219F"
 KNOWN_BUILD_ID = "24392074"
 
-# The 6 progression tools - Hookshot currently WIP as it locks you in an unskippable cutscene :(
+# The 6 progression tools - Hookshot NO LONGER WIP :)
 CORE_TOOLS = [
     "StrabbyBall",
     "SnapTrap",

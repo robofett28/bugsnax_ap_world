@@ -44,7 +44,7 @@ location_rules = {
     'Catch Big Bopsicle': lambda state, player: state.has('Sauce Slinger', player) and state.has('Buggy Ball', player) and state.has('Trip Shot', player),
     'Catch Rainbow Sweetiefly': lambda state, player: state.has('Sauce Slinger', player) and state.has('Buggy Ball', player) and state.has('Trip Shot', player) and state.has('SnakGrappler', player) and state.has('Lunchpad', player),
     'Catch Nutty Snakpod': lambda state, player: state.has('Sauce Slinger', player) and state.has('Buggy Ball', player) and state.has('Trip Shot', player) and state.has('SnakGrappler', player),
-    'Catch All Inner Bugs!': lambda state, player: state.has_all({'Sauce Slinger', 'Bug Net', 'Buggy Ball', 'Lunchpad', 'SnakGrappler', 'Trip Shot'}, player),
+    'Catch All Inner Bugs!': lambda state, player: state.has_all({'Sauce Slinger', 'Buggy Ball', 'Lunchpad', 'SnakGrappler', 'Trip Shot'}, player),
     'Complete the Final Mission': lambda state, player: state.has('Sauce Slinger', player) and state.has('Buggy Ball', player) and state.has('Trip Shot', player) and state.has('SnakGrappler', player) and state.has('Lunchpad', player),
     'Bugsnax File Complete': lambda state, player: state.has('Story Complete Token', player),
     'Catch Strabby': lambda state, player: True,

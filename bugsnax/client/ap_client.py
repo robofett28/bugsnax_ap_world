@@ -1,7 +1,7 @@
 """
 ap_client.py
 
-Bugsnax Archipelago client, built on AP's own CommonClient/kvui stack --
+Bugsnax Archipelago client, built on AP's own CommonClient/kvui stack
 """
 import asyncio
 import re
@@ -100,6 +100,8 @@ class BugsnaxContext(CommonContext):
         self.item_id_to_name = {}
         self.location_name_to_id = {}
         self.checked_locations_local = set()
+        self.ap_granted_tools = set()
+        self.tools_logged = set()
         self.last_captured_state = {}
         self.last_quest_status = {}
         self.last_area_state = {}
@@ -131,6 +133,8 @@ class BugsnaxContext(CommonContext):
 
         elif cmd == "Connected":
             self.checked_locations_local = set()
+            self.ap_granted_tools = set()
+            self.tools_logged = set()
             self.last_captured_state = {}
             self.last_quest_status = {}
             self.last_area_state = {}
@@ -153,10 +157,16 @@ class BugsnaxContext(CommonContext):
                             f"{', '.join(SPECIAL_LOCATIONS)}")
 
             if self.pm is None:
-                self.pm = get_pymem()
+                try:
+                    self.pm = get_pymem()
+                except Exception:
+                    logger.debug("Bugsnax.exe not found yet -- will keep retrying.")
             if self.save_path is None:
-                self.save_path = find_save_path()
-                logger.debug(f"Using save file: {self.save_path}")
+                try:
+                    self.save_path = find_save_path()
+                    logger.debug(f"Using save file: {self.save_path}")
+                except FileNotFoundError:
+                    logger.debug("Save file not found yet -- will keep retrying.")
 
         elif cmd == "ReceivedItems":
             for item in args["items"]:
@@ -167,17 +177,16 @@ class BugsnaxContext(CommonContext):
 
     async def apply_item(self, item_name):
         if item_name in GRANTABLE_TOOLS:
-            internal = GRANTABLE_TOOLS[item_name]
-            grant_value = 2 if internal in MOD_SUPPRESSED_TOOLS else 1
-            write_item(self.pm, GATE, max(read_item(self.pm, GATE), 1))
-            write_item(self.pm, f"{internal}_Selectable", grant_value)
-            logger.debug(f"  Granted {item_name} via memory write (value={grant_value}).")
+            self.ap_granted_tools.add(item_name)
+            logger.debug(f"  Queued {item_name} for grant.")
             return
 
         if item_name == "Golden Snax":
             self.golden_snax_count += 1
-            logger.debug(f"  Golden Snax: {self.golden_snax_count}/{self.golden_snax_required} "
-                        f"(server-side tracking only, no memory write needed)")
+            logger.info(f"Golden Snax {self.golden_snax_count}/{self.golden_snax_required}")
+            if (self.golden_snax_count >= self.golden_snax_required
+                    and not self.reached_credits and not self.goaled):
+                logger.info("Goal 1/2 completed (Golden Snax collected -- still need to beat the game).")
             await self.maybe_send_goal()
             return
 
@@ -224,6 +233,49 @@ class BugsnaxContext(CommonContext):
         self.ui_task = asyncio.create_task(self.ui.async_run(), name="UI")
 
 
+def enforce_tool_grants(ctx: BugsnaxContext):
+    if not ctx.ap_granted_tools:
+        return
+
+    if ctx.pm is None:
+        try:
+            ctx.pm = get_pymem()
+        except Exception:
+            return
+
+    for item_name in ctx.ap_granted_tools:
+        internal = GRANTABLE_TOOLS[item_name]
+        grant_value = 2 if internal in MOD_SUPPRESSED_TOOLS else 1
+        try:
+            write_item(ctx.pm, GATE, max(read_item(ctx.pm, GATE), 1))
+            write_item(ctx.pm, f"{internal}_Selectable", grant_value)
+            if item_name not in ctx.tools_logged:
+                confirmed = read_item(ctx.pm, f"{internal}_Selectable")
+                if confirmed == grant_value:
+                    logger.debug(f"  Granted {item_name} via memory write (value={grant_value}).")
+                    ctx.tools_logged.add(item_name)
+        except Exception:
+            pass
+
+
+def enforce_tool_suppression(ctx: BugsnaxContext):
+    if ctx.pm is None:
+        try:
+            ctx.pm = get_pymem()
+        except Exception:
+            return
+
+    for item_name, internal in GRANTABLE_TOOLS.items():
+        if internal not in MOD_SUPPRESSED_TOOLS:
+            continue
+        if item_name in ctx.ap_granted_tools:
+            continue
+        try:
+            write_item(ctx.pm, f"{internal}_Selectable", 0)
+        except Exception:
+            pass
+
+
 async def bugsnax_watcher(ctx: BugsnaxContext):
     """Background task: this watches the save file for captures/quest transitions/
     the credits transition, same detection logic as the previous version,
@@ -231,6 +283,16 @@ async def bugsnax_watcher(ctx: BugsnaxContext):
     while True:
         if ctx.exit_event.is_set():
             return
+
+        enforce_tool_grants(ctx)
+        enforce_tool_suppression(ctx)
+
+        if ctx.save_path is None:
+            try:
+                ctx.save_path = find_save_path()
+                logger.debug(f"Using save file: {ctx.save_path}")
+            except FileNotFoundError:
+                pass
 
         if ctx.save_path is not None and ctx.server is not None:
             sections = read_save_sections(ctx.save_path)
@@ -285,6 +347,9 @@ async def bugsnax_watcher(ctx: BugsnaxContext):
                     ctx.reached_credits = True
                     logger.debug(f"Reached $LevelCredits. ({ctx.golden_snax_count}/"
                                 f"{ctx.golden_snax_required} Golden Snax so far)")
+                    if ctx.golden_snax_count < ctx.golden_snax_required and not ctx.goaled:
+                        logger.info(f"Goal 1/2 completed (game beaten -- still need "
+                                    f"{ctx.golden_snax_required - ctx.golden_snax_count} more Golden Snax).")
                     await ctx.maybe_send_goal()
                 if new_area is not None:
                     ctx.last_area_state[GOAL_AREA_KEY] = new_area
