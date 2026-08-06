@@ -7,7 +7,7 @@ import asyncio
 import re
 import xml.etree.ElementTree as ET
 
-from CommonClient import CommonContext, get_base_parser, gui_enabled, server_loop, logger
+from CommonClient import CommonContext, ClientCommandProcessor, get_base_parser, gui_enabled, server_loop, logger
 
 from .bugsnax_memory import get_pymem, read_item, write_item
 from .bugsnax_paths import find_save_path
@@ -89,8 +89,26 @@ def quest_status(value):
     return value.split(";")[0]
 
 
+class BugsnaxCommandProcessor(ClientCommandProcessor):
+    def _cmd_resync(self):
+        """Force-reapply every tool Archipelago has granted you
+        Use this if you have received a tool via check,
+        but have not gotten it in game"""
+        ctx = self.ctx
+        if not isinstance(ctx, BugsnaxContext):
+            return
+        if not ctx.ap_granted_tools:
+            self.output("No tools received yet - nothing to resync.")
+            return
+        self.output(f"Resyncing {len(ctx.ap_granted_tools)} granted tool(s): "
+                    f"{', '.join(sorted(ctx.ap_granted_tools))}")
+        enforce_tool_grants(ctx)
+        self.output("Done.")
+
+
 class BugsnaxContext(CommonContext):
     game = "Bugsnax"
+    command_processor = BugsnaxCommandProcessor
     items_handling = 0b111
 
     def __init__(self, server_address, password):
@@ -160,13 +178,13 @@ class BugsnaxContext(CommonContext):
                 try:
                     self.pm = get_pymem()
                 except Exception:
-                    logger.debug("Bugsnax.exe not found yet -- will keep retrying.")
+                    logger.debug("Bugsnax.exe not found yet - will keep retrying.")
             if self.save_path is None:
                 try:
                     self.save_path = find_save_path()
                     logger.debug(f"Using save file: {self.save_path}")
                 except FileNotFoundError:
-                    logger.debug("Save file not found yet -- will keep retrying.")
+                    logger.debug("Save file not found yet - will keep retrying.")
 
         elif cmd == "ReceivedItems":
             for item in args["items"]:
@@ -186,12 +204,12 @@ class BugsnaxContext(CommonContext):
             logger.info(f"Golden Snax {self.golden_snax_count}/{self.golden_snax_required}")
             if (self.golden_snax_count >= self.golden_snax_required
                     and not self.reached_credits and not self.goaled):
-                logger.info("Goal 1/2 completed (Golden Snax collected -- still need to beat the game).")
+                logger.info("Goal 1/2 completed (All Golden Snax collected, however you still need to beat the game).")
             await self.maybe_send_goal()
             return
 
         if item_name in FILLER_ITEMS:
-            logger.debug(f"  ({item_name} -- junk filler, nothing to grant)")
+            logger.debug(f"  ({item_name} - junk filler, nothing to grant)")
             return
 
         if item_name in KNOWN_UNSUPPORTED:
@@ -211,7 +229,7 @@ class BugsnaxContext(CommonContext):
             return
         self.goaled = True
         logger.debug(f"Goal complete! (credits reached, {self.golden_snax_count}/"
-                    f"{self.golden_snax_required} Golden Snax) -- declaring victory!")
+                    f"{self.golden_snax_required} Golden Snax) - declaring victory!")
         await self.send_msgs([{"cmd": "StatusUpdate", "status": 30}])
 
     def send_location_check(self, loc_name):
@@ -237,11 +255,10 @@ def enforce_tool_grants(ctx: BugsnaxContext):
     if not ctx.ap_granted_tools:
         return
 
-    if ctx.pm is None:
-        try:
-            ctx.pm = get_pymem()
-        except Exception:
-            return
+    try:
+        ctx.pm = get_pymem()
+    except Exception:
+        return
 
     for item_name in ctx.ap_granted_tools:
         internal = GRANTABLE_TOOLS[item_name]
@@ -252,18 +269,16 @@ def enforce_tool_grants(ctx: BugsnaxContext):
             if item_name not in ctx.tools_logged:
                 confirmed = read_item(ctx.pm, f"{internal}_Selectable")
                 if confirmed == grant_value:
-                    logger.debug(f"  Granted {item_name} via memory write (value={grant_value}).")
                     ctx.tools_logged.add(item_name)
         except Exception:
             pass
 
 
 def enforce_tool_suppression(ctx: BugsnaxContext):
-    if ctx.pm is None:
-        try:
-            ctx.pm = get_pymem()
-        except Exception:
-            return
+    try:
+        ctx.pm = get_pymem()
+    except Exception:
+        return
 
     for item_name, internal in GRANTABLE_TOOLS.items():
         if internal not in MOD_SUPPRESSED_TOOLS:
@@ -348,7 +363,7 @@ async def bugsnax_watcher(ctx: BugsnaxContext):
                     logger.debug(f"Reached $LevelCredits. ({ctx.golden_snax_count}/"
                                 f"{ctx.golden_snax_required} Golden Snax so far)")
                     if ctx.golden_snax_count < ctx.golden_snax_required and not ctx.goaled:
-                        logger.info(f"Goal 1/2 completed (game beaten -- still need "
+                        logger.info(f"Goal 1/2 completed (Game has been beaten, however you still need "
                                     f"{ctx.golden_snax_required - ctx.golden_snax_count} more Golden Snax).")
                     await ctx.maybe_send_goal()
                 if new_area is not None:

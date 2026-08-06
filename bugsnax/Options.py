@@ -24,7 +24,7 @@ class GoldenSnaxExtra(Range):
     display_name = "Extra Golden Snax"
     range_start = 0
     range_end = 49
-    default = 5
+    default = 0
 
 
 @dataclass
