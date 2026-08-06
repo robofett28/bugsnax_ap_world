@@ -4,7 +4,12 @@ An unofficial [Archipelago](https://archipelago.gg) randomiser for Bugsnax.
 
 ## Status
 
-Currently in alpha. The core loop of catching, quests, tools, and final credits is working 
+Currently in alpha.
+
+This is only tested on the Steam version. Reports that items may not be
+being granted on the Epic Games Store version.
+
+The core loop of catching, quests, tools, and final credits is working 
 and has been tested end-to-end. Sauces and levels are yet to be randomised.
 Expect this to be rough around the edges - please report anything weird to me via
 [Issues](../../issues).
